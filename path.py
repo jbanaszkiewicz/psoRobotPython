@@ -1,4 +1,4 @@
-import cupy as np
+import cupy as cu
 import random
 from graph import norm
 
@@ -26,7 +26,7 @@ def getRandomPaths(edges, nodes, nrParticles):
     """
 #   srand(time(NULL));
     maxPathLen = len(nodes)
-    randomPaths = np.ones(shape=(nrParticles, maxPathLen), dtype=int)*-1
+    randomPaths = cu.ones(shape=(nrParticles, maxPathLen), dtype=int)*-1
     randomPaths[:, 0] = 0
     for i in range(nrParticles):
         currentNode = 0
