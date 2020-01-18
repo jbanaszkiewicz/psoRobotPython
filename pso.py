@@ -1,4 +1,5 @@
 import numpy as cu
+# import cupy
 from numba import cuda
 import numba as nb
 from path import getRandomPaths, getNeighbourNodes
@@ -30,7 +31,7 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
     threads_per_block = 128
     blocks_per_grid = 30
 
-    currentPaths = getRandomPaths(edges_h, nodes_h, nrParticles)
+    currentPaths = getRandomPaths[blocks_per_grid, threads_per_block](edges, nodes, nrParticles)
     currentPaths = cuda.to_device(currentPaths)
 
     bestPaths = cuda.to_device(cu.copy(currentPaths))
@@ -115,6 +116,7 @@ def sortNodes(neighbourNodes, nodes):
 #wybrac najlepsza globalnie
 #wybrac najlepsza sciezke dla Particle
 #porwnac aktulną losową z tymi dwoma
+
 def getGlobalBestPath(paths, particles,globalBestPath, globalBestCost):
     # zrownoleglic jak będzie na gpu
     shortestPathIndex = cu.argmin(particles[:,BEST])
