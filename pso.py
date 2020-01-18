@@ -1,29 +1,30 @@
 import numpy as np
 from copy import deepcopy
 from graph import norm
-import path
+from path import getRandomPaths, getNeighbourNodes
 
 CURRENT = 0
 BEST = 1
 
 def pso(nodes, edges, nrParticles, nrIterations): 
-    currentPaths = path.getRandomPaths(edges, nodes, nrParticles)
+    currentPaths = getRandomPaths(edges, nodes, nrParticles)
     bestPaths = deepcopy(currentPaths)
 
     particles = np.zeros(shape=(nrParticles,2))
-    initParticles(path,particles)
+    initParticles(bestPaths,particles, nodes)
 
-    globalBestPath = getGlobalBestPath(particles,bestPaths[0])
-    globalBestCost = countCost(globalBestPath)
+    globalBestPath = getGlobalBestPath(bestPaths, particles,bestPaths[0], countCost(bestPaths[0], nodes))
+    globalBestCost = countCost(globalBestPath, nodes)
 
     for i in range(nrIterations):
       nextPaths(currentPaths,bestPaths,globalBestPath)
-      updateParticles(currentPaths,bestPaths,particles)
-      globalBestPath = getGlobalBestPath(particles,globalBestPath,globalBestCost)
+      updateParticles(currentPaths,bestPaths,particles, nodes)
+      globalBestPath = getGlobalBestPath(bestPaths, particles,globalBestPath,globalBestCost)
+      globalBestCost = countCost(globalBestPath, nodes)
     
-def initParticles(paths, particles):
+def initParticles(paths, particles, nodes):
     for i in range(len(particles)):
-      cost = countCost(paths[i])
+      cost = countCost(paths[i], nodes)
       particles[i,CURRENT] = cost
       particles[i,BEST] = cost
 
@@ -41,34 +42,34 @@ def findNextPath(currentPath,bestPath,globalBestPath):
             #zabezpieczenie na wypadek wyjscia poza tablice randomPaths
             iterator = 1
             currentNode = 0
-        neighbourNodes = path.getNeighbourNodes(edges, currentNode)
+        neighbourNodes = getNeighbourNodes(edges, currentNode)
         
-        currentNode = getClosestNeighbour(neighbourNodes, bestPath[iterator],globalBestPath[iterator],nodes)
+        # currentNode = getClosestNeighbour(neighbourNodes, bestPath[iterator],globalBestPath[iterator],nodes)
 
         currentPath[iterator] = currentNode
         iterator += 1
 
 
-def getClosestNeighbour(neighbourNodes, bestPathNodeIdx,globalBestPathNodeIdx,nodes):
-  min([for elem in neighbourNodes])
-  # for i in neighbourNodes:
+# def getClosestNeighbour(neighbourNodes, bestPathNodeIdx,globalBestPathNodeIdx,nodes):
+#   min([for elem in neighbourNodes])
+#   # for i in neighbourNodes:
 
-  auto closestNeighbour = neighbours.first;
-  auto smallestNorm = GraphGenerator::normSquered(*(*closestNeighbour).second.first,*globalBestPathNode) 
-    + GraphGenerator::normSquered(*(*closestNeighbour).second.first,*particelBestPathNode);
+#   auto closestNeighbour = neighbours.first;
+#   auto smallestNorm = GraphGenerator::normSquered(*(*closestNeighbour).second.first,*globalBestPathNode) 
+#     + GraphGenerator::normSquered(*(*closestNeighbour).second.first,*particelBestPathNode);
 
-  for( auto i =  neighbours.first; i != neighbours.second; ++i)
-  {
-    auto norm = GraphGenerator::normSquered(*(*i).second.first,*globalBestPathNode) 
-        + GraphGenerator::normSquered(*(*i).second.first,*particelBestPathNode);
-    if(norm < smallestNorm)
-    {
-      closestNeighbour = i;
-      smallestNorm = norm;
-    }
-  }
-    return (*closestNeighbour).second.first;
-}
+#   for( auto i =  neighbours.first; i != neighbours.second; ++i)
+#   {
+#     auto norm = GraphGenerator::normSquered(*(*i).second.first,*globalBestPathNode) 
+#         + GraphGenerator::normSquered(*(*i).second.first,*particelBestPathNode);
+#     if(norm < smallestNorm)
+#     {
+#       closestNeighbour = i;
+#       smallestNorm = norm;
+#     }
+#   }
+#     return (*closestNeighbour).second.first;
+# }
 
 def sortNodes(neighbourNodes, nodes):
     return sorted(neighbourNodes, key=lambda x: norm(nodes[x], nodes[1]), reverse=False)
@@ -77,30 +78,30 @@ def sortNodes(neighbourNodes, nodes):
 #wybrac najlepsza globalnie
 #wybrac najlepsza sciezke dla Particle
 #porwnac aktulną losową z tymi dwoma
-def getGlobalBestPath( particles,globalBestPath, globalBestCost):
-    shortestPathIndex = np.argmin(particles[:,1]))
-    cost = particles[shortestPathIndex]
+def getGlobalBestPath(paths, particles,globalBestPath, globalBestCost):
+    shortestPathIndex = np.argmin(particles[:,BEST])
+    cost = particles[shortestPathIndex, BEST]
     if cost < globalBestCost:
       return paths[shortestPathIndex,:]
     return globalBestPath
 
-def updateParticles(currentPaths,bestPaths,particles):
+def updateParticles(currentPaths,bestPaths,particles, nodes):
     for i in range(len(particles)):
-        cost = countCost(currentPaths[i])
+        cost = countCost(currentPaths[i], nodes)
         updateParticle(currentPaths[i],bestPaths[i],particles[i] ,cost)
 
 def updateParticle(currentPath,bestPath,particle,cost):
-    particles[CURRENT] = cost
-    if  cost < particles[BEST]:
-        bestPaths = deepcopy(currentPaths)
-        particles[BEST] = cost
+    particle[CURRENT] = cost
+    if  cost < particle[BEST]:
+        bestPath = deepcopy(currentPath)
+        particle[BEST] = cost
 
 
-def countCost(path):
+def countCost(path, nodes):
     length = 0
 
     for idx in range(len(path)-1):
-        if nodes(path(idx + 1)) == -1:
+        if path[idx + 1] == -1:
             return length
         length += norm(nodes[path[idx]],nodes[path[idx + 1]])
 

@@ -29,7 +29,7 @@ def getRandomPaths(edges, nodes, nrParticles):
     """
 #   srand(time(NULL));
     maxPathLen = len(nodes)
-    randomPaths = np.ones(shape=(nrParticles, maxPathLen))*-1
+    randomPaths = np.ones(shape=(nrParticles, maxPathLen), dtype=int)*-1
     randomPaths[:, 0] = 0
     for i in range(nrParticles):
         currentNode = 0
