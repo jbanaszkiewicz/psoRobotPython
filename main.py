@@ -1,6 +1,6 @@
 import graph
-import path
 from copy import deepcopy
+import numpy as np
 
 
 nrParticles = 2
@@ -8,10 +8,7 @@ filename = r'./graphs/graph100'
 nrNodes, neighborhood, nodes = graph.loadGraph(filename)
 edges = graph.generateEdges(nodes, neighborhood)
 
-randomPaths = path.getRandomPaths(edges, nodes, nrParticles)
-bestPaths = deepcopy(randomPaths)
-bestPathGlobal = deepcopy(bestPaths[0])
-
+pso(nodes, edges, nrParticles)
 
 ##pso search
 

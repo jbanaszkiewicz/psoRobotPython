@@ -17,13 +17,12 @@ def generateEdges(nodes, neighborhood):
     edges = np.zeros(shape=(len(nodes),len(nodes)))
     for idxP, p in enumerate(nodes):
         for idxQ, q in enumerate(nodes):
-            distance = normSquared(p,q)
+            distance = norm(p,q)
             if idxP != idxQ and distance <= neighborhood:
                 edges[idxP, idxQ] = distance
             else:
                 edges[idxP, idxQ] = -1
     return edges
 
-def normSquared(p, q):
-
+def norm(p, q):
     return np.square((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1]))
