@@ -1,4 +1,4 @@
-import cupy as cu
+import numpy as cu
 import numpy as np
 
 def loadGraph(filename):

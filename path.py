@@ -1,4 +1,4 @@
-import cupy as cu
+import numpy as cu
 import random
 from graph import norm
 
