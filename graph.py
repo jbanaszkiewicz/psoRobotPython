@@ -1,5 +1,5 @@
+import cupy as cu
 import numpy as np
-
 
 def loadGraph(filename):
     nodes = []
@@ -25,4 +25,6 @@ def generateEdges(nodes, neighborhood):
     return edges
 
 def norm(p, q):
-    return np.square((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1]))
+    norm_value = cu.zeros(shape=(1,1))
+    norm_value[0] = cu.square((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1]))
+    return norm_value

@@ -1,14 +1,11 @@
-import numpy as np
+import cupy as np
 import random
+from graph import norm
 
 def getNeighbourNodes(edges, nodeIdx):
     vector = edges[nodeIdx, :]
     idxs = [idx for idx, elem in enumerate(vector) if elem>=0]
     return idxs
-
-
-def norm(p, q):
-    return np.square((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1]))
 
 
 def sortNodes(neighbourNodes, nodes):

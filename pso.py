@@ -1,16 +1,17 @@
-import numpy as np
-from copy import deepcopy
+import cupy as cu
+# from copy import deepcopy
 from graph import norm
 from path import getRandomPaths, getNeighbourNodes
 
 CURRENT = 0
 BEST = 1
 
+
 def pso(nodes, edges, nrParticles, nrIterations): 
     currentPaths = getRandomPaths(edges, nodes, nrParticles)
-    bestPaths = deepcopy(currentPaths)
+    bestPaths = cu.copy(currentPaths)
 
-    particles = np.zeros(shape=(nrParticles,2))
+    particles = cu.zeros(shape=(nrParticles,2))
     initParticles(bestPaths,particles, nodes)
 
     globalBestPath = getGlobalBestPath(bestPaths, particles,bestPaths[0], countCost(bestPaths[0], nodes))
@@ -24,16 +25,17 @@ def pso(nodes, edges, nrParticles, nrIterations):
     
 def initParticles(paths, particles, nodes):
     for i in range(len(particles)):
+      # cost = cu.zeros(shape=(1,1))
       cost = countCost(paths[i], nodes)
-      particles[i,CURRENT] = cost
-      particles[i,BEST] = cost
+      particles[i,CURRENT] = cost[0,0]
+      particles[i,BEST] = cost[0,0]
 
 def nextPaths(currentPaths,bestPaths,globalBestPath):
   pass
 
 def findNextPath(currentPath,bestPath,globalBestPath):
     maxPathLen = len(currentPath)
-    # randomPaths = np.ones(shape=(nrParticles, maxPathLen))*-1
+    # randomPaths = cu.ones(shape=(nrParticles, maxPathLen))*-1
     # randomPaths[:, 0] = 0
     currentNode = 0
     iterator = 1
@@ -79,7 +81,7 @@ def sortNodes(neighbourNodes, nodes):
 #wybrac najlepsza sciezke dla Particle
 #porwnac aktulną losową z tymi dwoma
 def getGlobalBestPath(paths, particles,globalBestPath, globalBestCost):
-    shortestPathIndex = np.argmin(particles[:,BEST])
+    shortestPathIndex = cu.argmin(particles[:,BEST])
     cost = particles[shortestPathIndex, BEST]
     if cost < globalBestCost:
       return paths[shortestPathIndex,:]
@@ -91,14 +93,15 @@ def updateParticles(currentPaths,bestPaths,particles, nodes):
         updateParticle(currentPaths[i],bestPaths[i],particles[i] ,cost)
 
 def updateParticle(currentPath,bestPath,particle,cost):
-    particle[CURRENT] = cost
+    particle[CURRENT] = cost[0,0]
     if  cost < particle[BEST]:
-        bestPath = deepcopy(currentPath)
-        particle[BEST] = cost
+        bestPath = cu.copy(currentPath)
+
+        particle[BEST] = cost[0,0]
 
 
 def countCost(path, nodes):
-    length = 0
+    length = cu.zeros(shape=(1,1))
 
     for idx in range(len(path)-1):
         if path[idx + 1] == -1:
