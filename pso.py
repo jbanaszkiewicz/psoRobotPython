@@ -55,10 +55,11 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
     if shortestGlobalIdx != -1:
       globalBestPath[0, :] = bestPaths[shortestGlobalIdx, :]
     
-    # globalBestCost = countCost(globalBestPath, nodes)
+    globalBestCost = particles[shortestGlobalIdx, BEST]
 
-    # for i in range(nrIterations):
-    #   nextPaths(currentPaths,bestPaths,globalBestPath)
+
+    for i in range(nrIterations):
+      nextPaths(currentPaths,bestPaths,globalBestPath, neighbourNodes)
     #   updateParticles(currentPaths,bestPaths,particles, nodes)
     #   globalBestPath = getGlobalBestPath(bestPaths, particles,globalBestPath,globalBestCost)
     #   globalBestCost = countCost(globalBestPath, nodes)
@@ -79,49 +80,52 @@ def initParticles(paths, particles, nodes):
       particles[i,CURRENT] = cost
       particles[i,BEST] = cost
 
-def nextPaths(currentPaths,bestPaths,globalBestPath):
-  pass
 
-def findNextPath(currentPath,bestPath,globalBestPath):
-    maxPathLen = len(currentPath)
-    # randomPaths = cu.ones(shape=(nrParticles, maxPathLen))*-1
-    # randomPaths[:, 0] = 0
-    currentNode = 0
-    iterator = 1
-    while currentNode != 1:
-        if iterator >= maxPathLen:
-            #zabezpieczenie na wypadek wyjscia poza tablice randomPaths
-            iterator = 1
-            currentNode = 0
-        # TODO teraz sąsiedzi są globalni trzeba rozważyć
-        # setNeighbourNodes(edges, currentNode)
-        
-        # currentNode = getClosestNeighbour(neighbourNodes, bestPath[iterator],globalBestPath[iterator],nodes)
+@cuda.jit
+def getNewPaths(currentPaths, bestPaths, globalBestPath, neighbourNodes, nodes ):
+  tx = cuda.threadIdx.x # this is the unique thread ID within a 1D block
+  ty = cuda.blockIdx.x  # Similarly, this is the unique block ID within the 1D grid
 
-        currentPath[iterator] = currentNode
-        iterator += 1
+  block_size = cuda.blockDim.x  # number of threads per block
+  grid_size = cuda.gridDim.x    # number of blocks in the grid
+  
+  start = tx + ty * block_size
+  stride = block_size * grid_size
+  for i in range(start, currentPaths.shape[0], stride):
+    getNewPath(currentPaths[i], bestPaths[i], globalBestPath, neighbourNodes[i], nodes)
 
 
-# def getClosestNeighbour(neighbourNodes, bestPathNodeIdx,globalBestPathNodeIdx,nodes):
-#   min([for elem in neighbourNodes])
-#   # for i in neighbourNodes:
+@cuda.jit(device=True)
+def getNewPath(currentPath, bestPath, globalBestPath, neighbourNodes, nodes):
+  
+  
+  for i, localBest, globalBest, idxsNgbr in enumerate(zip(bestPath, globalBestPath, neighbourNodes)):
+    if 
+    idx = findBestNeighbour(nodes[localBest], nodes[globalBest], idxsNgbr, nodes)
+    currentPath[i] = idx 
+  
 
-#   auto closestNeighbour = neighbours.first;
-#   auto smallestNorm = GraphGenerator::normSquered(*(*closestNeighbour).second.first,*globalBestPathNode) 
-#     + GraphGenerator::normSquered(*(*closestNeighbour).second.first,*particelBestPathNode);
 
-#   for( auto i =  neighbours.first; i != neighbours.second; ++i)
-#   {
-#     auto norm = GraphGenerator::normSquered(*(*i).second.first,*globalBestPathNode) 
-#         + GraphGenerator::normSquered(*(*i).second.first,*particelBestPathNode);
-#     if(norm < smallestNorm)
-#     {
-#       closestNeighbour = i;
-#       smallestNorm = norm;
-#     }
-#   }
-#     return (*closestNeighbour).second.first;
-# }
+@cuda.jit(device=True)
+def findBestNeighbour(bestPathNode,globalBestPathNode, neighboursNode, nodes):
+  """
+  Funkcja zdanduje najlepszy nowy wezel
+  bestPathNode :param: type Node
+  globalBestPathNode :param: type Node
+  neighboursNode :param: table of indexs in nodes, uzupełnione przez -1
+  nodes :param: tablica z Nodes
+  """
+  distance = norm(bestPathNode, nodes[neighboursNode[0]])+ norm(globalBestPathNode, nodes[neighboursNode[0]] )
+  idx = neighboursNode[0]
+  for ngbr in neighboursNode:
+    if neighbourNode[ngbrIdx] >0:
+      curDistance = norm(bestPathNode, nodes[ngbr])+ norm(globalBestPathNode, nodes[ngbr] )
+      if curDistance < distance:
+        distance = curDistance
+        idx = ngbr
+    else break
+  return idx
+
 
 def sortNodes(neighbourNodes, nodes):
     return sorted(neighbourNodes, key=lambda x: norm(nodes[x], nodes[1]), reverse=False)
@@ -160,14 +164,12 @@ def countCost(path, nodes):
     for idx in range(len(path)-1):
         if path[idx + 1] == -1:
             return length
-        p = nodes[int(path[idx])]
-        q = nodes[int(path[idx + 1])]
-        length += float(sqrt((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1])))
+        length += norm(nodes[int(path[idx])], nodes[int(path[idx + 1])])
 
     return float(length)
 
 
 
-# @cuda.jit(device=True)
-# def norm(p, q):
-#     return cu.square((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1]))
+@cuda.jit(device=True)
+def norm(p, q):
+    return float(sqrt((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1])))
