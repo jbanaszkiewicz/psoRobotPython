@@ -96,7 +96,7 @@ def getNewPaths(currentPaths, bestPaths, globalBestPath, neighbourNodes, nodes )
   start = tx + ty * block_size
   stride = block_size * grid_size
   for i in range(start, currentPaths.shape[0], stride):
-    getNewPath(currentPaths[i], bestPaths[i], globalBestPath, neighbourNodes[i], nodes)
+    getNewPath(currentPaths[i], bestPaths[i], globalBestPath, neighbourNodes, nodes)
 
 
 @cuda.jit(device=True)
@@ -106,7 +106,7 @@ def getNewPath(currentPath, bestPath, globalBestPath, neighbourNodes, nodes):
   globalLastUsed = globalBestPath[1]
   localLastUsed = bestPath[1]
   i = 0
-  for localBest, globalBest, idxsNgbr in zip(bestPath[1:], globalBestPath[1:], neighbourNodes[1:]):
+  for localBest, globalBest in zip(bestPath[1:], globalBestPath[1:]):
     if localBest == -1:
       localBest = localLastUsed
     localLastUsed = localBest
@@ -114,11 +114,11 @@ def getNewPath(currentPath, bestPath, globalBestPath, neighbourNodes, nodes):
       globalBest = globalLastUsed
     globalLastUsed = localBest
 
-    # idx = findBestNeighbour(nodes[localBest], nodes[globalBest], idxsNgbr, nodes)
-    # currentPath[i+1] = idx 
-    # if idx == 1:
-    #   break
-    # i+=1
+    idx = findBestNeighbour(nodes[localBest], nodes[globalBest], neighbourNodes[currentPath[i]], nodes)
+    currentPath[i+1] = idx 
+    if idx == 1:
+      break
+    i+=1
   
 
 
@@ -131,7 +131,15 @@ def findBestNeighbour(bestPathNode,globalBestPathNode, neighboursNode, nodes):
   neighboursNode :param: table of indexs in nodes, uzupełnione przez -1
   nodes :param: tablica z Nodes
   """
+  # q = nodes[neighboursNode[0]]
+  # norm1 = float(sqrt((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1])))
+  # p= globalBestPathNode
+  # q= nodes[neighboursNode[0]]
+  # norm2 = float(sqrt((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1])))
+  # distance = norm1+norm2
+
   distance = norm(bestPathNode, nodes[neighboursNode[0]])+ norm(globalBestPathNode, nodes[neighboursNode[0]] )
+  
   idx = neighboursNode[0]
   for ngbr in neighboursNode:
     if ngbr >0:
