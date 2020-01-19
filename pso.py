@@ -10,13 +10,15 @@ from math import sqrt
 CURRENT = int(0)
 BEST = int(1)
 
-def pso(nodes_h, edges_h, nrParticles, nrIterations): 
+def pso(nodes_h, edges_h, nrParticles, nrIterations, threads_per_block, blocks_per_grid): 
     nodes = cuda.to_device(nodes_h)
     edges = cuda.to_device(edges_h)
     cuda.synchronize()
-    
-    threads_per_block = 128
-    blocks_per_grid = 30
+    # print(threads_per_block)
+    # print(blocks_per_grid)
+    # threads_per_block = 128
+    # blocks_per_grid = 30
+  
 
     currentPaths = cuda.device_array(shape=(nrParticles, len(nodes)), dtype=int)
     neighbourNodes = cuda.device_array(shape=(nrParticles, len(nodes)), dtype=int)
@@ -54,6 +56,7 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
         globalBestPath[:] = bestPaths[shortestGlobalIdx, :]
         globalBestCost = particles[shortestGlobalIdx, BEST]
       cuda.synchronize()
+    return globalBestCost
     
 @cuda.jit
 def initParticles(paths, particles, nodes):

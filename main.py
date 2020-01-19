@@ -3,17 +3,18 @@ import numpy as cu
 import pso
 import time
 
-nrParticles = 200
-nrIterations = 10
-filename = r'./graphs/graph100'
-nrNodes, neighborhood, nodes = graph.loadGraph(filename)
-edges = graph.generateEdges(nodes, neighborhood)
+
+def main(graph_path, nr_of_iterations, threads_per_block, blocks_per_grid):
+  nrParticles = 200
+  filename = r'./graphs/graph1000'
+  nrNodes, neighborhood, nodes = graph.loadGraph(filename)
+  edges = graph.generateEdges(nodes, neighborhood)
 
 
 
-s = time.time()
-pso.pso(nodes, edges, nrParticles, nrIterations)
-f = time.time()
-print(f-s)
+  s = time.time()
+  pathLen =  pso.pso(nodes, edges, nrParticles, nr_of_iterations, threads_per_block, blocks_per_grid)
+  f = time.time()
+  return f-s, pathLen
 
 

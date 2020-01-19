@@ -1,0 +1,227 @@
+[
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 55.250484466552734,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.84166717529297,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.851686239242554,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.78983688354492,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.77413320541382,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.89393973350525,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.81268668174744,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.83869123458862,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.82746911048889,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.85532784461975,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.83679461479187,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.84899878501892,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 53.00875473022461,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.78803062438965,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.8159544467926,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.8241765499115,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.82352018356323,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.78119516372681,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.821372270584106,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.89204239845276,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.79011559486389,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.79472732543945,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.85451817512512,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.86980223655701,
+        "cost_best_path": 1.4320915938381071
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.84563732147217,
+        "cost_best_path": 1.4320915938381071
+    }
+]

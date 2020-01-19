@@ -1,0 +1,11 @@
+[
+    {
+        "name": "graph100_iters1000_threads128_blocks30",
+        "graph": "graph100",
+        "nr_of_iteration": 1000,
+        "nr_of_threads": 128,
+        "nr_of_blocks": 30,
+        "duration": 7.859904527664185,
+        "cost_best_path": 1.4320915938381071
+    }
+]
