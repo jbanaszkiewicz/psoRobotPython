@@ -41,7 +41,8 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
     getRandomPaths[blocks_per_grid, threads_per_block](edges, nodes, nrParticles,currentPaths,neighbourNodes,rng_states)
     cuda.synchronize()
     
-    bestPaths = cuda.to_device(cu.copy(currentPaths)) # copy on gpu
+    bestPaths = cuda.device_array(shape=currentPaths.shape, dtype=int)
+    bestPaths[:] = currentPaths # copy on gpu
     cuda.synchronize()
 
     particles = cuda.device_array(shape=(nrParticles,2), dtype=float)
@@ -50,16 +51,19 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
     initParticles[blocks_per_grid, threads_per_block](bestPaths,particles, nodes)
     cuda.synchronize()
 
-    globalBestPath = cuda.device_array(shape=(1, bestPaths.shape[1]), dtype=int)
+    globalBestPath = cuda.device_array(shape=(bestPaths.shape[1]), dtype=int)
     shortestGlobalIdx = getGlobalBestPath(particles, particles[0, BEST])
     if shortestGlobalIdx != -1:
-      globalBestPath[0, :] = bestPaths[shortestGlobalIdx, :]
+      globalBestPath[:] = bestPaths[shortestGlobalIdx, :]
     
     globalBestCost = particles[shortestGlobalIdx, BEST]
 
+    
 
     for i in range(nrIterations):
-      nextPaths(currentPaths,bestPaths,globalBestPath, neighbourNodes)
+      getNewPaths[blocks_per_grid, threads_per_block](currentPaths, bestPaths, globalBestPath, neighbourNodes, nodes )
+      cuda.synchronize()
+
     #   updateParticles(currentPaths,bestPaths,particles, nodes)
     #   globalBestPath = getGlobalBestPath(bestPaths, particles,globalBestPath,globalBestCost)
     #   globalBestCost = countCost(globalBestPath, nodes)
@@ -97,12 +101,24 @@ def getNewPaths(currentPaths, bestPaths, globalBestPath, neighbourNodes, nodes )
 
 @cuda.jit(device=True)
 def getNewPath(currentPath, bestPath, globalBestPath, neighbourNodes, nodes):
-  
-  
-  for i, localBest, globalBest, idxsNgbr in enumerate(zip(bestPath, globalBestPath, neighbourNodes)):
-    if 
-    idx = findBestNeighbour(nodes[localBest], nodes[globalBest], idxsNgbr, nodes)
-    currentPath[i] = idx 
+  currentPath[:] = -1
+  currentPath[0] = 0 
+  globalLastUsed = globalBestPath[1]
+  localLastUsed = bestPath[1]
+  i = 0
+  for localBest, globalBest, idxsNgbr in zip(bestPath[1:], globalBestPath[1:], neighbourNodes[1:]):
+    if localBest == -1:
+      localBest = localLastUsed
+    localLastUsed = localBest
+    if globalBest == -1:
+      globalBest = globalLastUsed
+    globalLastUsed = localBest
+
+    # idx = findBestNeighbour(nodes[localBest], nodes[globalBest], idxsNgbr, nodes)
+    # currentPath[i+1] = idx 
+    # if idx == 1:
+    #   break
+    # i+=1
   
 
 
@@ -118,12 +134,13 @@ def findBestNeighbour(bestPathNode,globalBestPathNode, neighboursNode, nodes):
   distance = norm(bestPathNode, nodes[neighboursNode[0]])+ norm(globalBestPathNode, nodes[neighboursNode[0]] )
   idx = neighboursNode[0]
   for ngbr in neighboursNode:
-    if neighbourNode[ngbrIdx] >0:
+    if ngbr >0:
       curDistance = norm(bestPathNode, nodes[ngbr])+ norm(globalBestPathNode, nodes[ngbr] )
       if curDistance < distance:
         distance = curDistance
         idx = ngbr
-    else break
+    else: 
+      break
   return idx
 
 
