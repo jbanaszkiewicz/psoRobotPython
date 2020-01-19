@@ -1,0 +1,152 @@
+[
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles200",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 55.91526985168457,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 200
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles200",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 52.983099937438965,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 200
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles200",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 53.293853998184204,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 200
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles200",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 54.177358627319336,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 200
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles200",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 55.34528708457947,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 200
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles960",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 57.14126014709473,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 960
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles960",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 57.28767156600952,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 960
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles960",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 56.71928381919861,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 960
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles960",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 56.69328737258911,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 960
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles960",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 57.79884052276611,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 960
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles1920",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 82.17134714126587,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 1920
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles1920",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 81.80997657775879,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 1920
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles1920",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 82.41107773780823,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 1920
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles1920",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 83.41210198402405,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 1920
+    },
+    {
+        "name": "graph1000_iters10000_threads32_blocks128_particles1920",
+        "graph": "graph1000",
+        "nr_of_iteration": 10000,
+        "nr_of_threads": 32,
+        "nr_of_blocks": 128,
+        "duration": 82.78846144676208,
+        "cost_best_path": 1.4320915938381071,
+        "particles": 1920
+    }
+]
