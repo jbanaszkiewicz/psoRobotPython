@@ -1,5 +1,5 @@
 import numpy as cu
-# import cupy
+import cupy
 from numba import cuda, types
 from numba.cuda.random import create_xoroshiro128p_states
 
@@ -36,16 +36,25 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
     currentPaths = cuda.device_array(shape=(nrParticles, len(nodes)), dtype=int)
     neighbourNodes = cuda.device_array(shape=(nrParticles, len(nodes)), dtype=int)
     rng_states = create_xoroshiro128p_states(threads_per_block * blocks_per_grid, seed=1)
-    getRandomPaths[blocks_per_grid, threads_per_block](edges, nodes, nrParticles,currentPaths,neighbourNodes,rng_states)
+    cuda.synchronize()
 
+    getRandomPaths[blocks_per_grid, threads_per_block](edges, nodes, nrParticles,currentPaths,neighbourNodes,rng_states)
+    cuda.synchronize()
+    
     bestPaths = cuda.to_device(cu.copy(currentPaths)) # copy on gpu
     cuda.synchronize()
 
-    particles = cuda.to_device(cu.zeros(shape=(nrParticles,2)))
+    particles = cuda.device_array(shape=(nrParticles,2), dtype=float)
+    cuda.synchronize()
+
     initParticles[blocks_per_grid, threads_per_block](bestPaths,particles, nodes)
     cuda.synchronize()
 
-    # globalBestPath = getGlobalBestPath(bestPaths, particles,bestPaths[0], countCost(bestPaths[0], nodes))
+    globalBestPath = cuda.device_array(shape=(1, bestPaths.shape[1]), dtype=int)
+    shortestGlobalIdx = getGlobalBestPath(particles, particles[0, BEST])
+    if shortestGlobalIdx != -1:
+      globalBestPath[0, :] = bestPaths[shortestGlobalIdx, :]
+    
     # globalBestCost = countCost(globalBestPath, nodes)
 
     # for i in range(nrIterations):
@@ -122,13 +131,15 @@ def sortNodes(neighbourNodes, nodes):
 #wybrac najlepsza sciezke dla Particle
 #porwnac aktulną losową z tymi dwoma
 
-def getGlobalBestPath(paths, particles,globalBestPath, globalBestCost):
+def getGlobalBestPath(particlesN,globalBestCost):
     # zrownoleglic jak będzie na gpu
-    shortestPathIndex = cu.argmin(particles[:,BEST])
+    particles = cupy.asarray(particlesN)
+    shortestPathIndex = cupy.argmin(particles[:,BEST])
     cost = particles[shortestPathIndex, BEST]
     if cost < globalBestCost:
-      return paths[shortestPathIndex,:]
-    return globalBestPath
+      return int(shortestPathIndex)
+    else:
+      return -1
 
 def updateParticles(currentPaths,bestPaths,particles, nodes):
     for i in range(len(particles)):
@@ -154,6 +165,7 @@ def countCost(path, nodes):
         length += float(sqrt((p[0] - q[0])*(p[0] - q[0]) + (p[1] - q[1])*(p[1] - q[1])))
 
     return float(length)
+
 
 
 # @cuda.jit(device=True)
