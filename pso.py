@@ -10,21 +10,6 @@ from math import sqrt
 CURRENT = int(0)
 BEST = int(1)
 
-@cuda.jit
-def add_kernel(x, y, out):
-    tx = cuda.threadIdx.x # this is the unique thread ID within a 1D block
-    ty = cuda.blockIdx.x  # Similarly, this is the unique block ID within the 1D grid
-
-    block_size = cuda.blockDim.x  # number of threads per block
-    grid_size = cuda.gridDim.x    # number of blocks in the grid
-    
-    start = tx + ty * block_size
-    stride = block_size * grid_size
-
-    # assuming x and y inputs are same length
-    for i in range(start, x.shape[0], stride):
-        out[i] = x[i] + y[i]
-
 def pso(nodes_h, edges_h, nrParticles, nrIterations): 
     nodes = cuda.to_device(nodes_h)
     edges = cuda.to_device(edges_h)
@@ -54,19 +39,21 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
     globalBestPath = cuda.device_array(shape=(bestPaths.shape[1]), dtype=int)
     shortestGlobalIdx = getGlobalBestPath(particles, particles[0, BEST])
     if shortestGlobalIdx != -1:
-      globalBestPath[:] = bestPaths[shortestGlobalIdx, :]
-    
-    globalBestCost = particles[shortestGlobalIdx, BEST]
-
-    
+      globalBestPath[:] = bestPaths[shortestGlobalIdx, :]    
+      globalBestCost = particles[shortestGlobalIdx, BEST]
 
     for i in range(nrIterations):
       getNewPaths[blocks_per_grid, threads_per_block](currentPaths, bestPaths, globalBestPath, neighbourNodes, nodes )
       cuda.synchronize()
 
-    #   updateParticles(currentPaths,bestPaths,particles, nodes)
-    #   globalBestPath = getGlobalBestPath(bestPaths, particles,globalBestPath,globalBestCost)
-    #   globalBestCost = countCost(globalBestPath, nodes)
+      updateParticles[blocks_per_grid, threads_per_block](currentPaths,bestPaths,particles, nodes)
+      cuda.synchronize()
+      
+      shortestGlobalIdx = getGlobalBestPath(particles, globalBestCost)
+      if shortestGlobalIdx != -1:
+        globalBestPath[:] = bestPaths[shortestGlobalIdx, :]
+        globalBestCost = particles[shortestGlobalIdx, BEST]
+      cuda.synchronize()
     
 @cuda.jit
 def initParticles(paths, particles, nodes):
@@ -83,6 +70,28 @@ def initParticles(paths, particles, nodes):
       cost = countCost(paths[i], nodes)
       particles[i,CURRENT] = cost
       particles[i,BEST] = cost
+
+@cuda.jit
+def updateParticles(currentPaths,bestPaths,particles, nodes):
+    tx = cuda.threadIdx.x # this is the unique thread ID within a 1D block
+    ty = cuda.blockIdx.x  # Similarly, this is the unique block ID within the 1D grid
+
+    block_size = cuda.blockDim.x  # number of threads per block
+    grid_size = cuda.gridDim.x    # number of blocks in the grid
+    
+    start = tx + ty * block_size
+    stride = block_size * grid_size
+
+    for i in range(start, particles.shape[0], stride):
+        cost = countCost(currentPaths[i], nodes)
+        updateParticle(currentPaths[i],bestPaths[i],particles[i] ,cost)
+
+@cuda.jit(device=True)
+def updateParticle(currentPath,bestPath,particle,cost):
+    particle[CURRENT] = cost
+    if  cost < particle[BEST]:
+        bestPath = currentPath
+        particle[BEST] = cost
 
 
 @cuda.jit
@@ -169,18 +178,6 @@ def getGlobalBestPath(particlesN,globalBestCost):
       return int(shortestPathIndex)
     else:
       return -1
-
-def updateParticles(currentPaths,bestPaths,particles, nodes):
-    for i in range(len(particles)):
-        cost = countCost(currentPaths[i], nodes)
-        updateParticle(currentPaths[i],bestPaths[i],particles[i] ,cost)
-
-def updateParticle(currentPath,bestPath,particle,cost):
-    particle[CURRENT] = cost
-    if  cost < particle[BEST]:
-        bestPath = cu.copy(currentPath)
-
-        particle[BEST] = cost
 
 @cuda.jit(device=True)
 def countCost(path, nodes):
