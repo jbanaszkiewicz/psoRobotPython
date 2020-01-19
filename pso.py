@@ -1,8 +1,10 @@
 import numpy as cu
 # import cupy
-from numba import cuda
+from numba import cuda, types
+from numba.cuda.random import create_xoroshiro128p_states
+
 import numba as nb
-from path import getRandomPaths, getNeighbourNodes
+from path import getRandomPaths, setNeighbourNodes
 from math import sqrt
 
 CURRENT = int(0)
@@ -31,10 +33,12 @@ def pso(nodes_h, edges_h, nrParticles, nrIterations):
     threads_per_block = 128
     blocks_per_grid = 30
 
-    currentPaths = getRandomPaths[blocks_per_grid, threads_per_block](edges, nodes, nrParticles)
-    currentPaths = cuda.to_device(currentPaths)
+    currentPaths = cuda.device_array(shape=(nrParticles, len(nodes)), dtype=int)
+    neighbourNodes = cuda.device_array(shape=(nrParticles, len(nodes)), dtype=int)
+    rng_states = create_xoroshiro128p_states(threads_per_block * blocks_per_grid, seed=1)
+    getRandomPaths[blocks_per_grid, threads_per_block](edges, nodes, nrParticles,currentPaths,neighbourNodes,rng_states)
 
-    bestPaths = cuda.to_device(cu.copy(currentPaths))
+    bestPaths = cuda.to_device(cu.copy(currentPaths)) # copy on gpu
     cuda.synchronize()
 
     particles = cuda.to_device(cu.zeros(shape=(nrParticles,2)))
@@ -80,7 +84,8 @@ def findNextPath(currentPath,bestPath,globalBestPath):
             #zabezpieczenie na wypadek wyjscia poza tablice randomPaths
             iterator = 1
             currentNode = 0
-        neighbourNodes = getNeighbourNodes(edges, currentNode)
+        # TODO teraz sąsiedzi są globalni trzeba rozważyć
+        # setNeighbourNodes(edges, currentNode)
         
         # currentNode = getClosestNeighbour(neighbourNodes, bestPath[iterator],globalBestPath[iterator],nodes)
 

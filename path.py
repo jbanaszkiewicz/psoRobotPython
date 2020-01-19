@@ -1,20 +1,27 @@
 import numpy as cu
-import random
+from numba.cuda.random import xoroshiro128p_uniform_float32
 from graph import norm
-from numba import cuda, types
+from numba import cuda
+from math import floor
 
 @cuda.jit(device=True)
-def getNeighbourNodes(edges, nodeIdx):
-    vector = edges[nodeIdx, :]
-    idxs = [idx for idx, elem in enumerate(vector) if elem>=0]
-    return idxs
+def setNeighbourNodes(edges, nodeIdx,neighbourNodes):
+    nodesEdges = edges[nodeIdx, :]
+
+    neighbourNodes[:] = -1
+    i = 0
+    for idx, elem in enumerate(nodesEdges):
+        if elem>=0:
+          neighbourNodes[i] = idx
+          i+=1
+    return i
 
 
 def sortNodes(neighbourNodes, nodes):
     return sorted(neighbourNodes, key=lambda x: norm(nodes[x], nodes[1]), reverse=False)
 
 @cuda.jit
-def getRandomPaths(edges, nodes, nrParticles):
+def getRandomPaths(edges, nodes, nrParticles, randomPaths,neighbourNodes,rng_states):
     """
     Sprawdzam, czy w wektorze mam tyle losowych ścieżek, ile jest wymagane.
     Jeśli nie, rozpoczynam tworzenie nowej losowej ścieżki, którą dodam do wektora.
@@ -38,11 +45,11 @@ def getRandomPaths(edges, nodes, nrParticles):
     stride = block_size * grid_size
 
 
-    maxPathLen = len(nodes)
+    maxPathLen = randomPaths.shape[1]
     # randomPaths = cu.ones(shape=(nrParticles, maxPathLen), dtype=int)*-1
-    randomPaths = cuda.shared.array(shape=(nrParticles, maxPathLen), dtype=types.int32)
-    randomPaths[:, 0] = 0
     for i in range(start, nrParticles, stride):
+        randomPaths[i, :] = -1
+        randomPaths[i, 0] = 0
         currentNode = 0
         iterator = 1
         while currentNode != 1:
@@ -50,17 +57,17 @@ def getRandomPaths(edges, nodes, nrParticles):
                 #zabezpieczenie na wypadek wyjscia poza tablice randomPaths
                 iterator = 1
                 currentNode = 0
-            neighbourNodes = getNeighbourNodes(edges, currentNode)
+            nrOfNeighbours = setNeighbourNodes(edges, currentNode,neighbourNodes[i])
             
             
             # sortedNodes = sortNodes(neighbourNodes, nodes)
-            sortedNodes = neighbourNodes
+            sortedNodes = neighbourNodes[i]
             # Ustalam liczbę odpowiadającą połowie sąsiadow
-            randomNode = random.randint(0, int(len(sortedNodes)/2))
+            randomFloat = cuda.random.xoroshiro128p_normal_float32(rng_states,i)
+            randomNodeIdx = int(randomFloat%int( nrOfNeighbours/2))
             # Teraz muszę wylosować liczbę z zakresu od 0 do (halfOfNeighbours - 1)
-            currentNode = sortedNodes[randomNode]
+            currentNode = sortedNodes[randomNodeIdx]
             # Ustawienie nowego aktualnego węzła i dodanie go do aktualnej ścieżki
             randomPaths[i, iterator] = currentNode
             iterator += 1
   
-    return randomPaths
