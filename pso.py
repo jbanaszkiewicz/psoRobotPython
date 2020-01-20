@@ -189,9 +189,9 @@ def countCost(path, nodes):
     for idx in range(len(path)-1):
         if path[idx + 1] == -1:
             return length
-        length += norm(nodes[int(path[idx])], nodes[int(path[idx + 1])])
+        length += norm(nodes[path[idx]], nodes[path[idx + 1]])
 
-    return float(length)
+    return length
 
 
 
